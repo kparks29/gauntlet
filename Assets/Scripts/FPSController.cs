@@ -12,7 +12,7 @@ namespace Gauntlet {
 		private float rotationX;
 
 		void OnEnable () {
-		
+			SetInitialReferences ();
 		}
 
 		void OnDisable () {
@@ -31,7 +31,7 @@ namespace Gauntlet {
 		}
 
 		void SetInitialReferences () {
-
+			DontDestroyOnLoad (this);
 		}
 	}
 }

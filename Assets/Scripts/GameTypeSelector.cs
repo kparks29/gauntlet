@@ -7,6 +7,7 @@ namespace Gauntlet {
 
 		private SelectableObjectHighlighter script;
 		private string doorSelected;
+		private bool isGameTypeSelected = false;
 		public bool isNewGame = true;
 
 		void OnEnable () {
@@ -27,12 +28,13 @@ namespace Gauntlet {
 		}
 
 		void Update () {
-			if (Input.GetKeyDown (KeyCode.Space) && doorSelected != null) {
+			if (Input.GetKeyDown (KeyCode.Space) && doorSelected != null && !isGameTypeSelected) {
 				if (doorSelected == "Door1") {
 					isNewGame = true;
 				} else if (doorSelected == "Door2") {
 					isNewGame = false;
 				}
+				isGameTypeSelected = true;
 				SceneManager.LoadScene ("CharacterSelector");
 			}
 		}
@@ -53,7 +55,7 @@ namespace Gauntlet {
 
 		void OnSceneChanged (Scene previousScene, Scene newScene) {
 			if (newScene.name == "CharacterSelector") {
-				Debug.Log (isNewGame);
+				Debug.Log ("This is a new game: " + isNewGame.ToString());
 			}
 		}
 	}

@@ -43,12 +43,18 @@ namespace Gauntlet {
 				ray = new Ray (camera.transform.position, camera.transform.forward);
 
 				if (Physics.Raycast (ray, out hit, 20f, layerMask)) {
-					hit.transform.GetComponent<MeshRenderer> ().material.shader = Shader.Find ("Custom/ImageEffectShader");
+					var meshRenderer = hit.transform.GetComponent<MeshRenderer> ();
+					if (meshRenderer != null) {
+						meshRenderer.material.shader = Shader.Find ("Custom/ImageEffectShader");
+					}
 					lastHit = hit.transform;
 					SuccessCallbackEvent (lastHit);
 				} else {
 					if (lastHit != null) {
-						lastHit.GetComponent<MeshRenderer> ().material.shader = Shader.Find ("Legacy Shaders/Diffuse");
+						var meshRenderer = lastHit.GetComponent<MeshRenderer> ();
+						if (meshRenderer != null) {
+							meshRenderer.material.shader = Shader.Find ("Legacy Shaders/Diffuse");
+						}
 						NoHitCallbackEvent (lastHit);
 					}
 				}
