@@ -14,6 +14,9 @@ namespace Gauntlet {
 		public event CallbackEvent NoHitCallbackEvent;
 		public LayerMask layerMask;
 
+        Shader outlineShader;
+        Shader regularShader;
+
 		void OnEnable () {
 			SetInitialReferences ();
 		}
@@ -23,8 +26,10 @@ namespace Gauntlet {
 		}
 
 		void Start () {
+            outlineShader = Shader.Find("Custom/ImageEffectShader");
+            regularShader = Shader.Find("Legacy Shaders/Diffuse");
 
-		}
+        }
 
 		void Update () {
 
@@ -45,16 +50,18 @@ namespace Gauntlet {
 				if (Physics.Raycast (ray, out hit, 20f, layerMask)) {
 					var meshRenderer = hit.transform.GetComponent<MeshRenderer> ();
 					if (meshRenderer != null) {
-						meshRenderer.material.shader = Shader.Find ("Custom/ImageEffectShader");
-					}
+                        //meshRenderer.material.shader = Shader.Find ("Custom/ImageEffectShader");      //Dont do Find's at runtime, cache a reference in the start method
+                        meshRenderer.material.shader = outlineShader;
+                    }
 					lastHit = hit.transform;
 					SuccessCallbackEvent (lastHit);
 				} else {
 					if (lastHit != null) {
 						var meshRenderer = lastHit.GetComponent<MeshRenderer> ();
 						if (meshRenderer != null) {
-							meshRenderer.material.shader = Shader.Find ("Legacy Shaders/Diffuse");
-						}
+                            //meshRenderer.material.shader = Shader.Find ("Legacy Shaders/Diffuse");   //Dont do Find's at runtime, cache a reference in the start method
+                            meshRenderer.material.shader = regularShader;
+                        }
 						NoHitCallbackEvent (lastHit);
 					}
 				}
