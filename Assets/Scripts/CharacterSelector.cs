@@ -9,6 +9,7 @@ namespace Gauntlet {
 		private SelectableObjectHighlighter script;
 		private Transform activeObject;
 		public string characterSelected;
+        MyLocalPlayer myPlayer;
 
 		void OnEnable () {
 			SetInitialReferences ();
@@ -24,11 +25,15 @@ namespace Gauntlet {
 		}
 
 		void Start () {
-
+            myPlayer = FindObjectOfType<MyLocalPlayer>();
 		}
 
 		void Update () {
 			if (Input.GetKeyDown (KeyCode.Space) && activeObject != null) {
+                if(myPlayer != null)
+                {
+                    myPlayer.SetupCharacter(activeObject.name);
+                }
 				characterSelected = activeObject.name;
 				SceneManager.LoadScene ("Town");
 			}
