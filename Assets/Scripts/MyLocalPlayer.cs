@@ -6,6 +6,9 @@ public class MyLocalPlayer : MonoBehaviour {
     public Color myColor = Color.black;
     public Transform myHead;
     public int myint;
+	public string steam_id;
+	public string username;
+	public string password;
 
     Renderer rend;
     //This will become private
