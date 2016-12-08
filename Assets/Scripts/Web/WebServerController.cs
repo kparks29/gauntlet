@@ -24,15 +24,15 @@ public class WebServerController : MonoBehaviour {
 	{
 		bool isValid = false;
 		WWWForm form = new WWWForm();
-		if (localPlayer.steam_id != null && localPlayer.steam_id != string.Empty)
+		if (localPlayer.user.steam_id != null && localPlayer.user.steam_id != string.Empty)
 		{
-			form.AddField ("steam_id", localPlayer.steam_id);
+			form.AddField ("steam_id", localPlayer.user.steam_id);
 			isValid = true;
 		}
-		else if (localPlayer.username != null && localPlayer.username != string.Empty && localPlayer.password != null && localPlayer.password != string.Empty)
+		else if (localPlayer.user.username != null && localPlayer.user.username != string.Empty && localPlayer.user.password != null && localPlayer.user.password != string.Empty)
 		{
-			form.AddField ("username", localPlayer.username);
-			form.AddField ("password", localPlayer.password);
+			form.AddField ("username", localPlayer.user.username);
+			form.AddField ("password", localPlayer.user.password);
 			isValid = true;
 		}
 
@@ -48,6 +48,7 @@ public class WebServerController : MonoBehaviour {
 			else
 			{
 				Debug.Log (www.downloadHandler.text);
+				JsonUtility.FromJsonOverwrite(www.downloadHandler.text, localPlayer.user);
 			}
 		}
 	}
