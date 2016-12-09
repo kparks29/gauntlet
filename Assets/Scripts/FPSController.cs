@@ -17,11 +17,6 @@ public class FPSController : MonoBehaviour {
 		SetInitialReferences ();
 	}
 
-	void OnDisable () 
-	{
-	
-	}
-
 	void Start () 
 	{
 		if (player == null) 

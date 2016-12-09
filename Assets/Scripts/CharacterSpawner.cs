@@ -33,7 +33,8 @@ public class CharacterSpawner : MonoBehaviour {
 	{
 		SetInitialReferences ();
 	}
-		
+
+	// checks to see if it is a new character or returning to spawn the right characters
 	public void SpawnCharacters () {
 		if (localPlayer.newCharacter) 
 		{
@@ -45,6 +46,7 @@ public class CharacterSpawner : MonoBehaviour {
 		}
 	}
 
+	// spawn the 3 default characters
 	void SpawnNewCharacters ()
 	{
 		if (localPlayer.newCharacter)
@@ -67,6 +69,8 @@ public class CharacterSpawner : MonoBehaviour {
 		}
 	}
 
+	// spawn all the user's existing characters
+	// ***TODO*** the position and rotation will need some tweeking
 	void SpawnExistingCharacters ()
 	{
 		foreach (Character character in localPlayer.user.characters)
@@ -114,23 +118,30 @@ public class CharacterSpawner : MonoBehaviour {
 			{
 				material = warriorMaterial;
 			}
-
+				
 			CharacterOptionSettings (characterPosition, characterRotation, material, character);
 		}
 	}
 		
+	// get initial reference the local player
 	void SetInitialReferences ()
 	{
 		localPlayer = GameObject.FindObjectOfType<MyLocalPlayer> ();
 	}
 
+	// wrapper function to spawn a character and setup it's properties
 	void CharacterOptionSettings (Vector3 position, Vector3 rotation, Material material, Character character)
 	{
+		// spawn the character
 		GameObject newCharacter = Instantiate (characterPrefab, position, Quaternion.Euler(rotation));
+		// set it as a child of characters game object
 		newCharacter.transform.parent = characters.transform;
+		// get the renderer and characterstats components
 		var newCharacterRenderer = newCharacter.GetComponent<MeshRenderer> ();
 		var newCharacterStats = newCharacter.GetComponent<CharacterStatLoader>();
+		// set the material
 		newCharacterRenderer.material = material;
+		// set the character data
 		newCharacterStats.character = character;
 	}
 }

@@ -13,6 +13,7 @@ public class CharacterStatLoader : MonoBehaviour
 	public Text magicText;
 	public Character character;
 
+	// loads the character data to the UI text elements
 	void Start () 
 	{
 		nameText.text = character.character_name;

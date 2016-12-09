@@ -10,9 +10,6 @@ public class MyLocalPlayer : MonoBehaviour
     public int myint;
 	public User user = new User();
 
-	private WebServerController webServerController;
-
-    Renderer rend;
     //This will become private
     public bool newCharacter = true;
 	public bool canContinue = false;
@@ -20,6 +17,8 @@ public class MyLocalPlayer : MonoBehaviour
 	public Character currentCharacter;
 
 	private Text continueDoorText;
+	private WebServerController webServerController;
+
 
 	void OnEnable ()
 	{
@@ -39,8 +38,9 @@ public class MyLocalPlayer : MonoBehaviour
 
     public void Start()
     {
-        rend = GetComponent<Renderer>();
+		// don't destroy the local player
         DontDestroyOnLoad(gameObject);
+		// get the steam id if possible
 		GetSteamId ();
     }
 
@@ -75,6 +75,7 @@ public class MyLocalPlayer : MonoBehaviour
 		}
 	}
 
+	// toggle door text
 	public void ToggleContinueDoor ()
 	{
 		if (continueDoorText != null)
@@ -86,30 +87,14 @@ public class MyLocalPlayer : MonoBehaviour
     
     public void SetupCharacter(Character selectedCharacter)
     {
-		switch (selectedCharacter.character_name)
-        {
-            case "Wizard":
-                SetupWizard();
-                break;
-            case "Warrior":
-                SetupWarrior();
-                break;
-            case "Archer":
-                SetupArcher();
-                break;
-            default:
-                SetupWarrior();
-                break;
-        }
-
+		// if it's a new character add the character
 		if (newCharacter)
 		{
 			webServerController.AddCharacter (selectedCharacter);	
 		}
+		// if it's a returning character find it in the character list
 		else
 		{
-			currentCharacter = selectedCharacter; // remove this once characters are spawned
-
 			// Determine which character this is and set currentCharacter to it
 			foreach (Character character in user.characters)
 			{
@@ -121,47 +106,7 @@ public class MyLocalPlayer : MonoBehaviour
 		}
     }
 
-    void SetupWizard()
-    {
-        if (newCharacter)
-        {
-            myColor = Color.blue;
-        }
-        else
-        {
-            myColor = new Color(myColor.r, myColor.g, myColor.b - 75);
-        }
-    }
-
-    void SetupWarrior()
-    {
-        if (newCharacter)
-        {
-            myColor = Color.red;
-        }
-        else
-        {
-            myColor = new Color(myColor.r - 75, myColor.g, myColor.b);
-        }
-    }
-
-    void SetupArcher()
-    {
-        if (newCharacter)
-        {
-            myColor = Color.green;
-        }
-        else
-        {
-            myColor = new Color(myColor.r, myColor.g - 75, myColor.b);
-        }
-    }
-
-    void SetupSkills()
-    {
-
-    }
-
+	// get game objects and components
 	void SetInitialReferences ()
 	{
 		webServerController = GetComponent<WebServerController> ();

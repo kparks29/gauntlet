@@ -9,7 +9,7 @@ public class CharacterSelector : MonoBehaviour
 
 	private SelectableObjectHighlighter script;
 	private Transform activeObject;
-	public Character characterSelected;
+	private Character characterSelected;
     private MyLocalPlayer myPlayer;
 	private WebServerController webServerController;
 	private Character character = new Character();
@@ -18,7 +18,9 @@ public class CharacterSelector : MonoBehaviour
 
 	void OnEnable () 
 	{
+		// all the setup calls
 		SetInitialReferences ();
+		// subscribe to events
 		script.SuccessCallbackEvent += SuccessCallback;
 		script.NoHitCallbackEvent += NoHitCallback;
 		SceneManager.activeSceneChanged += OnSceneChanged;
@@ -26,23 +28,24 @@ public class CharacterSelector : MonoBehaviour
 
 	void OnDisable () 
 	{
+		// unsubscribe to events
 		script.SuccessCallbackEvent -= SuccessCallback;
 		script.NoHitCallbackEvent -= NoHitCallback;
 		SceneManager.activeSceneChanged -= OnSceneChanged;
-		RemoveCharacterLoadEventListener ();
-	}
 
-	void Start () 
-	{
-        
+		// run function to unsubscribe to this event
+		RemoveCharacterLoadEventListener ();
 	}
 
 	void Update () 
 	{
+		// if space bar is pressed and character is highlighted 
 		if (Input.GetKeyDown (KeyCode.Space) && activeObject != null) 
 		{
+			// if there is a local player object found
             if(myPlayer != null)
             {
+				// get the character and send it to my player object
 				character = activeObject.GetComponent<CharacterStatLoader> ().character;
 				myPlayer.SetupCharacter(character);
             }
@@ -51,6 +54,7 @@ public class CharacterSelector : MonoBehaviour
 		}
 	}
 
+	// get initial references to components and objects
 	void SetInitialReferences () 
 	{
 		script = GetComponent<SelectableObjectHighlighter> ();
@@ -58,6 +62,7 @@ public class CharacterSelector : MonoBehaviour
 		webServerController = FindObjectOfType<WebServerController>();
 	}
 
+	// gameobject was found in raycast, set the canvas active
 	void SuccessCallback (Transform objectHit) 
 	{
 		
@@ -72,6 +77,7 @@ public class CharacterSelector : MonoBehaviour
 		}
 	}
 
+	// tests to see object should be hit
 	bool ValidOption (Transform objectHit) 
 	{
 		bool isValidObject = activeObject == null || activeObject.name != objectHit.name;
@@ -82,6 +88,7 @@ public class CharacterSelector : MonoBehaviour
 		return isValidObject;
 	}
 
+	// nothing currently in view callback
 	void NoHitCallback (Transform lastObjectHit) 
 	{
 		if (activeObject != null && lastObjectHit.name != "Canvas") 
@@ -97,13 +104,14 @@ public class CharacterSelector : MonoBehaviour
 
 	void OnSceneChanged (Scene previousScene, Scene newScene) 
 	{
+		// character has been selected when moving to town
 		if (newScene.name == "Town") 
 		{
 			Debug.Log (characterSelected.character_class);
 		}
 		else if (newScene.name == "CharacterSelector")
 		{
-			// get the spawner once player switches to scene
+			// get the spawner once the player switches to character selection screen
 			if (spawner == null)
 			{
 				var go = GameObject.Find ("CharacterSpawner");
@@ -113,16 +121,19 @@ public class CharacterSelector : MonoBehaviour
 				}
 			}
 
+			// if is a new character, remove the get characters listener and spawn the characters
 			if (myPlayer.newCharacter)
 			{
 				RemoveCharacterLoadEventListener ();
 				SpawnCharacters ();
 			}
+			// if is a returning player with characters remove the get characters listener and spawn the existing characters
 			else if (myPlayer.user.characters.Count > 0)
 			{
 				RemoveCharacterLoadEventListener ();
 				SpawnCharacters ();
 			}
+			// this still needs to get the characters
 			else
 			{
 				webServerController.GetCharacterSuccessEvent += SpawnCharacters;
@@ -130,7 +141,7 @@ public class CharacterSelector : MonoBehaviour
 			}
 		}
 	}
-
+		
 	void SpawnCharacters ()
 	{
 		if (spawner != null) 
@@ -145,6 +156,7 @@ public class CharacterSelector : MonoBehaviour
 
 	void RemoveCharacterLoadEventListener ()
 	{
+		// remove the event if the event hasn't been removed yet
 		if (!characterLoadEventRemoved)
 		{
 			characterLoadEventRemoved = true;

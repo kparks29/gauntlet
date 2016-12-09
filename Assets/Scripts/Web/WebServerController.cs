@@ -14,6 +14,7 @@ public class WebServerController : MonoBehaviour {
 		SetInitialReferences ();
 	}
 
+	// public call to login
 	public void Login ()
 	{
 		if (localPlayer != null)
@@ -26,6 +27,7 @@ public class WebServerController : MonoBehaviour {
 	{
 		bool isValid = false;
 		WWWForm form = new WWWForm();
+		// checks to see if it needs to set the steam_id or username property
 		if (localPlayer.user.steam_id != null && localPlayer.user.steam_id != string.Empty)
 		{
 			form.AddField ("steam_id", localPlayer.user.steam_id);
@@ -38,6 +40,7 @@ public class WebServerController : MonoBehaviour {
 			isValid = true;
 		}
 
+		// does a POST to /users (logs in the user or creates the users and logins in)
 		if (isValid)
 		{
 			UnityWebRequest www = UnityWebRequest.Post (serverUrl + "/users", form);
@@ -49,13 +52,16 @@ public class WebServerController : MonoBehaviour {
 			}
 			else
 			{
+				// set the results to the user property of MyLocalPlayer
 				JsonUtility.FromJsonOverwrite(www.downloadHandler.text, localPlayer.user);
+				// get the characters for this user
 				GetCharacters ();
 			}
 		}
 	}
 
-	public IEnumerator GetCharactersCall ()
+	// gets a list of characters for the users and sets it to the user.characters propery of MyLocalPlayer
+	IEnumerator GetCharactersCall ()
 	{
 		GetCharactersResponse response = new GetCharactersResponse ();
 		UnityWebRequest www = UnityWebRequest.Get (serverUrl + "/characters");
@@ -67,6 +73,7 @@ public class WebServerController : MonoBehaviour {
 		} else {
 			JsonUtility.FromJsonOverwrite (www.downloadHandler.text, response);
 			localPlayer.user.characters = response.characters;
+			// if successfull and there are callbacks subscribed to this event, trigger it
 			if (GetCharacterSuccessEvent != null) {
 				GetCharacterSuccessEvent ();	
 			}
@@ -75,6 +82,8 @@ public class WebServerController : MonoBehaviour {
 
 	IEnumerator CreateCharacter (Character character)
 	{
+		// creates a new character by adding it's class and name.
+		// the server will set the rest of it's default properties for protections
 		WWWForm form = new WWWForm();
 		if (character.character_class != null)
 		{
@@ -86,6 +95,7 @@ public class WebServerController : MonoBehaviour {
 		}
 		form.AddField ("character_name", character.character_name);
 		UnityWebRequest www = UnityWebRequest.Post (serverUrl + "/characters", form);
+		// only logged in users can create a character
 		www.SetRequestHeader ("Access-Token", localPlayer.user.token);
 		yield return www.Send ();
 
@@ -95,18 +105,23 @@ public class WebServerController : MonoBehaviour {
 		}
 		else
 		{
+			// gets the character list after creating the character
+			// this allows us to retrieve the starting stats from the server
 			GetCharacters ();
 		}
 	}
 
+	// public call to add characters
 	public void AddCharacter (Character character)
 	{
+		// if the player is logged in then we can create a character
 		if (localPlayer.canSave)
 		{
 			StartCoroutine (CreateCharacter (character));
 		}
 		else
 		{
+			// just add the default settings that we set to the character list and run the event handler
 			localPlayer.user.characters.Add(character);
 			if (GetCharacterSuccessEvent != null) {
 				GetCharacterSuccessEvent ();	
@@ -114,6 +129,7 @@ public class WebServerController : MonoBehaviour {
 		}
 	}
 
+	// public call to get characters
 	public void GetCharacters ()
 	{
 		if (localPlayer.canSave)
@@ -122,6 +138,7 @@ public class WebServerController : MonoBehaviour {
 		}
 	}
 
+	// gets references to the local player and also sets a url for the server if one isnt present
 	void SetInitialReferences ()
 	{
 		localPlayer = GetComponent<MyLocalPlayer> ();

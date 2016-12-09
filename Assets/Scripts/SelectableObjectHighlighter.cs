@@ -9,6 +9,7 @@ public class SelectableObjectHighlighter : MonoBehaviour
 	private Ray ray;
 	private RaycastHit hit;
 	private Transform lastHit;
+
 	public delegate void CallbackEvent (Transform t);
 	public event CallbackEvent SuccessCallbackEvent;
 	public event CallbackEvent NoHitCallbackEvent;
@@ -22,11 +23,7 @@ public class SelectableObjectHighlighter : MonoBehaviour
 		SetInitialReferences ();
 	}
 
-	void OnDisable () 
-	{
-
-	}
-
+	// find the shaders
 	void Start () 
 	{
         outlineShader = Shader.Find("Custom/ImageEffectShader");
@@ -38,6 +35,7 @@ public class SelectableObjectHighlighter : MonoBehaviour
 		HighlightCharacter ();
 	}
 
+	// get initial reference to camera if FPS
 	void SetInitialReferences () 
 	{
 		if (gameObject.name == "FPSController") 
@@ -48,23 +46,30 @@ public class SelectableObjectHighlighter : MonoBehaviour
 
 	void HighlightCharacter () 
 	{
+		// if the camera is present continue
 		if (camera != null) 
 		{
+			// get a ray cast forward from the camera
 			ray = new Ray (camera.transform.position, camera.transform.forward);
 
+			// show hit of anything in the layerMask
 			if (Physics.Raycast (ray, out hit, 20f, layerMask)) 
 			{
+				// set the shader to the outline shader
 				var meshRenderer = hit.transform.GetComponent<MeshRenderer> ();
 				if (meshRenderer != null) 
 				{
                     //meshRenderer.material.shader = Shader.Find ("Custom/ImageEffectShader");      //Dont do Find's at runtime, cache a reference in the start method
                     meshRenderer.material.shader = outlineShader;
                 }
+				// store last hit and trigger success callback event
 				lastHit = hit.transform;
 				SuccessCallbackEvent (lastHit);
-			} 
+			}
+			// if there are no hits run this
 			else 
 			{
+				// if the last hit is not empty reset the shader back to the regular shader
 				if (lastHit != null) 
 				{
 					var meshRenderer = lastHit.GetComponent<MeshRenderer> ();
@@ -73,6 +78,7 @@ public class SelectableObjectHighlighter : MonoBehaviour
                         //meshRenderer.material.shader = Shader.Find ("Legacy Shaders/Diffuse");   //Dont do Find's at runtime, cache a reference in the start method
                         meshRenderer.material.shader = regularShader;
                     }
+					// trigger the nothing hit callback event
 					NoHitCallbackEvent (lastHit);
 				}
 			}
