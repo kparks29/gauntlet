@@ -11,38 +11,15 @@ public class CharacterStatLoader : MonoBehaviour
 	public Text attackText;
 	public Text defenseText;
 	public Text magicText;
-
-	private CharacterStats characterStats;
-
-	void OnEnable () 
-	{
-		SetInitialReferences ();
-	}
-
-	void OnDisable () 
-	{
-	
-	}
+	public Character character;
 
 	void Start () 
 	{
-		if (characterStats != null) 
-		{
-			nameText.text = characterStats.characterName.ToString();
-			classText.text = characterStats.characterClass.ToString();
-			healthText.text = characterStats.health.ToString();
-			attackText.text = characterStats.attack.ToString();
-			defenseText.text = characterStats.defense.ToString();
-			magicText.text = characterStats.magic.ToString();
-		}
-	}
-
-	void Update () {
-
-	}
-
-	void SetInitialReferences () 
-	{
-		characterStats = GetComponent<CharacterStats> ();
+		nameText.text = character.character_name;
+		classText.text = character.character_class;
+		healthText.text = character.max_health.ToString();
+		attackText.text = character.strength.ToString();
+		defenseText.text = character.defense.ToString();
+		magicText.text = character.magic.ToString();
 	}
 }
