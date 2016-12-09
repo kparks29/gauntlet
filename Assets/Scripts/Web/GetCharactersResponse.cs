@@ -3,5 +3,5 @@
 [System.Serializable]
 public class GetCharactersResponse
 {
-	public List<CharacterStats> characters;
+	public List<Character> characters;
 }

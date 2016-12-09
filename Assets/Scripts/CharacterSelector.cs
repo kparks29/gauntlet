@@ -10,7 +10,10 @@ public class CharacterSelector : MonoBehaviour
 	private SelectableObjectHighlighter script;
 	private Transform activeObject;
 	public string characterSelected;
-    MyLocalPlayer myPlayer;
+    private MyLocalPlayer myPlayer;
+	private WebServerController webServerController;
+	private Character character = new Character();
+	private bool characterLoadEventRemoved = false;
 
 	void OnEnable () 
 	{
@@ -18,6 +21,7 @@ public class CharacterSelector : MonoBehaviour
 		script.SuccessCallbackEvent += SuccessCallback;
 		script.NoHitCallbackEvent += NoHitCallback;
 		SceneManager.activeSceneChanged += OnSceneChanged;
+		webServerController.GetCharacterSuccessEvent += CharactersLoaded;
 	}
 
 	void OnDisable () 
@@ -25,11 +29,12 @@ public class CharacterSelector : MonoBehaviour
 		script.SuccessCallbackEvent -= SuccessCallback;
 		script.NoHitCallbackEvent -= NoHitCallback;
 		SceneManager.activeSceneChanged -= OnSceneChanged;
+		RemoveCharacterLoadEventListener ();
 	}
 
 	void Start () 
 	{
-        myPlayer = FindObjectOfType<MyLocalPlayer>();
+        
 	}
 
 	void Update () 
@@ -38,7 +43,9 @@ public class CharacterSelector : MonoBehaviour
 		{
             if(myPlayer != null)
             {
-                myPlayer.SetupCharacter(activeObject.name);
+				character.character_name = activeObject.name;
+				character.character_class = activeObject.name;
+				myPlayer.SetupCharacter(character);
             }
 			characterSelected = activeObject.name;
 			SceneManager.LoadScene ("Town");
@@ -48,6 +55,8 @@ public class CharacterSelector : MonoBehaviour
 	void SetInitialReferences () 
 	{
 		script = GetComponent<SelectableObjectHighlighter> ();
+		myPlayer = FindObjectOfType<MyLocalPlayer>();
+		webServerController = FindObjectOfType<WebServerController>();
 	}
 
 	void SuccessCallback (Transform objectHit) 
@@ -91,7 +100,36 @@ public class CharacterSelector : MonoBehaviour
 	{
 		if (newScene.name == "Town") 
 		{
-			Debug.Log (characterSelected);
+//			Debug.Log (characterSelected);
+		}
+		else if (newScene.name == "CharacterSelector")
+		{
+			if (myPlayer.newCharacter)
+			{
+				RemoveCharacterLoadEventListener ();
+			}
+			else
+			{
+				webServerController.GetCharacters ();
+			}
+		}
+	}
+
+	void CharactersLoaded ()
+	{
+		foreach(Character character in myPlayer.user.characters)
+		{
+			// SPAWN CHARACTERS HERE FOR CONTINUING GAME
+			Debug.Log (character.character_class + ": " + character.uuid);
+		}
+	}
+
+	void RemoveCharacterLoadEventListener ()
+	{
+		if (!characterLoadEventRemoved)
+		{
+			characterLoadEventRemoved = true;
+			webServerController.GetCharacterSuccessEvent -= CharactersLoaded;
 		}
 	}
 

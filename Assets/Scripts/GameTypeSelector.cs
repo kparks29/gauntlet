@@ -9,6 +9,7 @@ public class GameTypeSelector : MonoBehaviour
 	private string doorSelected;
 	private bool isGameTypeSelected = false;
 	public bool isNewGame = true;
+	private MyLocalPlayer localPlayer;
 
 	void OnEnable () 
 	{
@@ -36,11 +37,11 @@ public class GameTypeSelector : MonoBehaviour
 		{
 			if (doorSelected == "Door1") 
 			{
-				isNewGame = true;
+				localPlayer.newCharacter = true;
 			} 
 			else if (doorSelected == "Door2") 
 			{
-				isNewGame = false;
+				localPlayer.newCharacter = false;
 			}
 			isGameTypeSelected = true;
 			SceneManager.LoadScene ("CharacterSelector");
@@ -51,6 +52,7 @@ public class GameTypeSelector : MonoBehaviour
 	{
 		GameObject fpsController = GameObject.Find ("FPSController");
 		script = fpsController.GetComponent<SelectableObjectHighlighter> ();
+		localPlayer = GetComponent<MyLocalPlayer>();
 		DontDestroyOnLoad (this);
 	}
 
@@ -68,7 +70,7 @@ public class GameTypeSelector : MonoBehaviour
 	{
 		if (newScene.name == "CharacterSelector") 
 		{
-			Debug.Log ("This is a new game: " + isNewGame.ToString());
+			Debug.Log ("This is a new game: " + localPlayer.newCharacter.ToString());
 		}
 	}
 }

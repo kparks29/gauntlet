@@ -11,5 +11,5 @@ public class User
 	public string password;
 	public string token;
 
-	public List<CharacterStats> characters;
+	public List<Character> characters;
 }
