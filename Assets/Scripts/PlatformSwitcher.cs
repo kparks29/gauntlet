@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlatformSwitcher : MonoBehaviour {
+public class PlatformSwitcher : MonoBehaviour 
+{
     public enum Platform { SteamVR, FPS}
 
     public Platform startingPlatform;
@@ -12,7 +13,8 @@ public class PlatformSwitcher : MonoBehaviour {
     BodyParts b;
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+	{
         mlp = GetComponent<MyLocalPlayer>();
         switch (startingPlatform){
             case Platform.SteamVR:

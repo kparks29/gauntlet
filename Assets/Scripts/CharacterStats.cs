@@ -1,35 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Gauntlet {
-	public class CharacterStats : MonoBehaviour {
+public class CharacterStats : MonoBehaviour 
+{
 
-		public int level = 1;
-		public int health;
-		public int attack;
-		public int defense;
-		public int magic;
-		public string characterName;
-		public string characterClass;
+	public int level = 1;
+	public int health;
+	public int attack;
+	public int defense;
+	public int magic;
+	public string characterName;
+	public string characterClass;
 
-		void OnEnable () {
-		
-		}
+	void OnEnable () 
+	{
+	
+	}
 
-		void OnDisable () {
-		
-		}
+	void OnDisable () 
+	{
+	
+	}
 
-		void Start () {
+	void Start () 
+	{
 
-		}
+	}
 
-		void Update () {
+	void Update () 
+	{
 
-		}
+	}
 
-		void SetInitialReferences () {
+	void SetInitialReferences () 
+	{
 
-		}
 	}
 }

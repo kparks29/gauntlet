@@ -1,14 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MyLocalPlayer : MonoBehaviour {
-
+public class MyLocalPlayer : MonoBehaviour 
+{
     public Color myColor = Color.black;
     public Transform myHead;
+    public int myint;
+	public User user = new User();
+
+	private WebServerController webServerController;
 
     Renderer rend;
     //This will become private
     public bool newCharacter = true;
+
+	void OnEnable ()
+	{
+		webServerController = GetComponent<WebServerController> ();
+	}
 
     public void Start()
     {
@@ -16,9 +25,9 @@ public class MyLocalPlayer : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }
     
-    public void SetupCharacter(string characterName)
+    public void SetupCharacter(Character character)
     {
-        switch (characterName)
+		switch (character.character_name)
         {
             case "Wizard":
                 SetupWizard();
@@ -33,6 +42,11 @@ public class MyLocalPlayer : MonoBehaviour {
                 SetupWarrior();
                 break;
         }
+
+		if (newCharacter)
+		{
+			webServerController.AddCharacter (character);	
+		}
     }
 
     void SetupWizard()

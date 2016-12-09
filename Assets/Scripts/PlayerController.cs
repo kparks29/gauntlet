@@ -2,14 +2,17 @@
 using System.Collections;
 using UnityEngine.Networking;
 
-public class PlayerController : NetworkBehaviour {
+public class PlayerController : NetworkBehaviour 
+{
 
     Renderer rend;
     [SyncVar]
     public Color playerColor;
     public MyLocalPlayer mlp;
     // Use this for initialization
-    void Start () {
+
+    void Start () 
+	{
         rend = GetComponent<Renderer>();
         if (isLocalPlayer)
         {
