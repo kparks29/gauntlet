@@ -17,6 +17,7 @@ public class MyLocalPlayer : MonoBehaviour
     public bool newCharacter = true;
 	public bool canContinue = false;
 	public bool canSave = true;
+	public Character currentCharacter;
 
 	private Text continueDoorText;
 
@@ -83,9 +84,9 @@ public class MyLocalPlayer : MonoBehaviour
 	}
 
     
-    public void SetupCharacter(Character character)
+    public void SetupCharacter(Character selectedCharacter)
     {
-		switch (character.character_name)
+		switch (selectedCharacter.character_name)
         {
             case "Wizard":
                 SetupWizard();
@@ -103,7 +104,20 @@ public class MyLocalPlayer : MonoBehaviour
 
 		if (newCharacter)
 		{
-			webServerController.AddCharacter (character);	
+			webServerController.AddCharacter (selectedCharacter);	
+		}
+		else
+		{
+			currentCharacter = selectedCharacter; // remove this once characters are spawned
+
+			// Determine which character this is and set currentCharacter to it
+			foreach (Character character in user.characters)
+			{
+				if (character.id == selectedCharacter.id)
+				{
+					currentCharacter = selectedCharacter;
+				}
+			}
 		}
     }
 

@@ -9,7 +9,7 @@ public class CharacterSelector : MonoBehaviour
 
 	private SelectableObjectHighlighter script;
 	private Transform activeObject;
-	public string characterSelected;
+	public Character characterSelected;
     private MyLocalPlayer myPlayer;
 	private WebServerController webServerController;
 	private Character character = new Character();
@@ -42,11 +42,10 @@ public class CharacterSelector : MonoBehaviour
 		{
             if(myPlayer != null)
             {
-				character.character_name = activeObject.name;
-				character.character_class = activeObject.name;
+				character = activeObject.GetComponent<CharacterStatLoader> ().character;
 				myPlayer.SetupCharacter(character);
             }
-			characterSelected = activeObject.name;
+			characterSelected = character;
 			SceneManager.LoadScene ("Town");
 		}
 	}
@@ -99,7 +98,7 @@ public class CharacterSelector : MonoBehaviour
 	{
 		if (newScene.name == "Town") 
 		{
-//			Debug.Log (characterSelected);
+			Debug.Log (characterSelected.character_class);
 		}
 		else if (newScene.name == "CharacterSelector")
 		{

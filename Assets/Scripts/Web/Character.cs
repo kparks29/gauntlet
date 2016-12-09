@@ -2,7 +2,7 @@
 
 public class Character
 {
-	public string uuid;
+	public string id;
 	public string character_name; 
 	public string character_class;
 	public int level;
