@@ -14,7 +14,7 @@ public class WebServerController : MonoBehaviour {
 		SetInitialReferences ();
 	}
 
-	void Start ()
+	public void Login ()
 	{
 		if (localPlayer != null)
 		{

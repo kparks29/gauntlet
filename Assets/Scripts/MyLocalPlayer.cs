@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Steamworks;
 
 public class MyLocalPlayer : MonoBehaviour 
 {
@@ -23,7 +24,21 @@ public class MyLocalPlayer : MonoBehaviour
     {
         rend = GetComponent<Renderer>();
         DontDestroyOnLoad(gameObject);
+		GetSteamId ();
     }
+
+	public void GetSteamId ()
+	{
+		if (SteamManager.Initialized) 
+		{
+			user.steam_id = SteamUser.GetSteamID().ToString();
+			webServerController.Login();
+		}
+		else
+		{
+			Debug.LogError("Steam is not opened, cannot get Steam Id");
+		}
+	}
     
     public void SetupCharacter(Character character)
     {
