@@ -14,6 +14,7 @@ public class CharacterSelector : MonoBehaviour
 	private WebServerController webServerController;
 	private Character character = new Character();
 	private bool characterLoadEventRemoved = false;
+	private CharacterSpawner spawner;
 
 	void OnEnable () 
 	{
@@ -102,9 +103,20 @@ public class CharacterSelector : MonoBehaviour
 		}
 		else if (newScene.name == "CharacterSelector")
 		{
+			// get the spawner once player switches to scene
+			if (spawner == null)
+			{
+				var go = GameObject.Find ("CharacterSpawner");
+				if (go != null)
+				{
+					spawner = go.GetComponent<CharacterSpawner> ();
+				}
+			}
+
 			if (myPlayer.newCharacter)
 			{
 				RemoveCharacterLoadEventListener ();
+				SpawnCharacters ();
 			}
 			else if (myPlayer.user.characters.Count > 0)
 			{
@@ -121,9 +133,13 @@ public class CharacterSelector : MonoBehaviour
 
 	void SpawnCharacters ()
 	{
-		foreach(Character character in myPlayer.user.characters)
+		if (spawner != null) 
 		{
-			// SPAWN CHARACTERS HERE FOR CONTINUING GAME
+			spawner.SpawnCharacters ();
+		}
+		else
+		{
+			Debug.LogError ("Could not locate spawner");
 		}
 	}
 

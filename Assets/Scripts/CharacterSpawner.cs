@@ -34,7 +34,7 @@ public class CharacterSpawner : MonoBehaviour {
 		SetInitialReferences ();
 	}
 		
-	void Start () {
+	public void SpawnCharacters () {
 		if (localPlayer.newCharacter) 
 		{
 			SpawnNewCharacters ();
