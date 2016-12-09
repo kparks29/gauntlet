@@ -2,13 +2,15 @@
 using System.Collections;
 using UnityEngine.Networking;
 
-public class PlayerController : NetworkBehaviour {
+public class PlayerController : NetworkBehaviour 
+{
 
     Renderer rend;
     Color playerColor;
     public MyLocalPlayer mlp;
     // Use this for initialization
-    void Start () {
+    void Start () 
+	{
         if (isLocalPlayer)
         {
             GameObject go = GameObject.FindGameObjectWithTag("LocalPlayer");

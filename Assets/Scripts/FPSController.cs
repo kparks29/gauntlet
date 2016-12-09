@@ -1,43 +1,47 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Gauntlet {
-	public class FPSController : MonoBehaviour {
+public class FPSController : MonoBehaviour {
         
-		private float maxY = 60;
-		private float minY = -60;
-		private float rotationY = 0F;
-		private float rotationX;
+	private float maxY = 60;
+	private float minY = -60;
+	private float rotationY = 0F;
+	private float rotationX;
 
-        public float turnSpeed = 30;
-        public float moveSpeed = 10.0f;
-        public Transform player;
+    public float turnSpeed = 30;
+    public float moveSpeed = 10.0f;
+    public Transform player;
 
-		void OnEnable () {
-			SetInitialReferences ();
+	void OnEnable () 
+	{
+		SetInitialReferences ();
+	}
+
+	void OnDisable () 
+	{
+	
+	}
+
+	void Start () 
+	{
+		if (player == null) 
+		{
+			Debug.LogWarning ("Setup Player in FPSController");
 		}
+	}
 
-		void OnDisable () {
-		
-		}
+    void Update()
+    {
+        rotationX = player.localEulerAngles.y + Input.GetAxis("Mouse X") * turnSpeed * Time.deltaTime;
+        rotationY += Input.GetAxis("Mouse Y") * turnSpeed * Time.deltaTime;
+        rotationY = Mathf.Clamp(rotationY, minY, maxY);
+        player.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
 
-		void Start () {
-            if (player == null)
-                Debug.LogWarning("Setup Player in FPSController");
-		}
+        player.Translate(Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed, 0, Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed);
+    }
 
-        void Update()
-        {
-            rotationX = player.localEulerAngles.y + Input.GetAxis("Mouse X") * turnSpeed * Time.deltaTime;
-            rotationY += Input.GetAxis("Mouse Y") * turnSpeed * Time.deltaTime;
-            rotationY = Mathf.Clamp(rotationY, minY, maxY);
-            player.localEulerAngles = new Vector3(-rotationY, rotationX, 0);
-
-            player.Translate(Input.GetAxis("Horizontal") * Time.deltaTime * moveSpeed, 0, Input.GetAxis("Vertical") * Time.deltaTime * moveSpeed);
-        }
-
-		void SetInitialReferences () {
-			DontDestroyOnLoad (this);
-		}
+	void SetInitialReferences () 
+	{
+		DontDestroyOnLoad (this);
 	}
 }
