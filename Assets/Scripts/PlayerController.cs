@@ -6,23 +6,25 @@ public class PlayerController : NetworkBehaviour
 {
 
     Renderer rend;
-    Color playerColor;
+    [SyncVar]
+    public Color playerColor;
     public MyLocalPlayer mlp;
     // Use this for initialization
+
     void Start () 
 	{
+        rend = GetComponent<Renderer>();
         if (isLocalPlayer)
         {
             GameObject go = GameObject.FindGameObjectWithTag("LocalPlayer");
             mlp = go.GetComponent<MyLocalPlayer>();
-            rend = GetComponent<Renderer>();
             CmdSetup(mlp.myColor);
         }
-        //else if (isServer)
-        //{
-        //    StartCoroutine(ServerSetup());
-        //}
-	}
+        else
+        {
+            Setup(playerColor);
+        }
+    }
 	
     void LateUpdate()
     {
@@ -31,6 +33,11 @@ public class PlayerController : NetworkBehaviour
             transform.position = mlp.myHead.position;
             transform.rotation = mlp.myHead.rotation;
         }
+    }
+
+    void Setup(Color color)
+    {
+        rend.material.color = color;
     }
 
     IEnumerator ServerSetup()

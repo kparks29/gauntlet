@@ -2,13 +2,10 @@
 using System.Collections;
 using UnityEngine.Networking;
 
-public class WebServerController : MonoBehaviour 
-{
+public class WebServerController : MonoBehaviour {
 
 	private MyLocalPlayer localPlayer;
 	public string serverUrl;
-
-	private CharacterStats characterToAdd;
 
 	void OnEnable ()
 	{
@@ -19,13 +16,12 @@ public class WebServerController : MonoBehaviour
 	{
 		if (localPlayer != null)
 		{
-			StartCoroutine (LoadPlayer ("test"));
+			StartCoroutine (LoadPlayer ());
 		}
 	}
 	
-	IEnumerator LoadPlayer (string test)
+	IEnumerator LoadPlayer ()
 	{
-		Debug.Log (test);
 		bool isValid = false;
 		WWWForm form = new WWWForm();
 		if (localPlayer.user.steam_id != null && localPlayer.user.steam_id != string.Empty)
@@ -51,50 +47,12 @@ public class WebServerController : MonoBehaviour
 			}
 			else
 			{
+				Debug.Log (www.downloadHandler.text);
 				JsonUtility.FromJsonOverwrite(www.downloadHandler.text, localPlayer.user);
 			}
 		}
 	}
 
-	IEnumerator GetCharacters ()
-	{
-		UnityWebRequest www = UnityWebRequest.Get (serverUrl + "/characters");
-		www.SetRequestHeader ("Access-Token", localPlayer.user.token);
-		yield return www.Send ();
-
-		if (www.isError)
-		{
-			Debug.Log (www.error);
-		}
-		else
-		{
-			GetCharactersResponse response = new GetCharactersResponse ();
-			JsonUtility.FromJsonOverwrite (www.downloadHandler.text, response);
-			localPlayer.user.characters = response.characters;
-		}
-	}
-
-	IEnumerator CreateCharacter ()
-	{
-		UnityWebRequest www = UnityWebRequest.Post (serverUrl + "/characters", JsonUtility.ToJson (characterToAdd));
-		www.SetRequestHeader ("Access-Token", localPlayer.user.token);
-		yield return www.Send ();
-
-		if (www.isError)
-		{
-			Debug.Log (www.error);
-		}
-		else
-		{
-			Debug.Log(www.downloadHandler.text);
-		}
-	}
-
-	public void AddCharacter (CharacterStats character)
-	{
-		characterToAdd = character;
-		StartCoroutine (CreateCharacter ());
-	}
 
 	void SetInitialReferences ()
 	{

@@ -6,7 +6,7 @@ public class MyLocalPlayer : MonoBehaviour
     public Color myColor = Color.black;
     public Transform myHead;
     public int myint;
-	public User user = new User ();
+	public User user = new User();
 
     Renderer rend;
     //This will become private
@@ -16,7 +16,6 @@ public class MyLocalPlayer : MonoBehaviour
     {
         rend = GetComponent<Renderer>();
         DontDestroyOnLoad(gameObject);
-        myint = Random.Range(0, 80);
     }
     
     public void SetupCharacter(string characterName)
