@@ -21,7 +21,6 @@ public class CharacterSelector : MonoBehaviour
 		script.SuccessCallbackEvent += SuccessCallback;
 		script.NoHitCallbackEvent += NoHitCallback;
 		SceneManager.activeSceneChanged += OnSceneChanged;
-		webServerController.GetCharacterSuccessEvent += CharactersLoaded;
 	}
 
 	void OnDisable () 
@@ -108,19 +107,24 @@ public class CharacterSelector : MonoBehaviour
 			{
 				RemoveCharacterLoadEventListener ();
 			}
+			else if (myPlayer.user.characters.Count > 0)
+			{
+				RemoveCharacterLoadEventListener ();
+				SpawnCharacters ();
+			}
 			else
 			{
+				webServerController.GetCharacterSuccessEvent += SpawnCharacters;
 				webServerController.GetCharacters ();
 			}
 		}
 	}
 
-	void CharactersLoaded ()
+	void SpawnCharacters ()
 	{
 		foreach(Character character in myPlayer.user.characters)
 		{
 			// SPAWN CHARACTERS HERE FOR CONTINUING GAME
-			Debug.Log (character.character_class + ": " + character.uuid);
 		}
 	}
 
@@ -129,7 +133,7 @@ public class CharacterSelector : MonoBehaviour
 		if (!characterLoadEventRemoved)
 		{
 			characterLoadEventRemoved = true;
-			webServerController.GetCharacterSuccessEvent -= CharactersLoaded;
+			webServerController.GetCharacterSuccessEvent -= SpawnCharacters;
 		}
 	}
 

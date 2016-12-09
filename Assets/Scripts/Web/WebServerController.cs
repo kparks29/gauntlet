@@ -50,6 +50,7 @@ public class WebServerController : MonoBehaviour {
 			else
 			{
 				JsonUtility.FromJsonOverwrite(www.downloadHandler.text, localPlayer.user);
+				GetCharacters ();
 			}
 		}
 	}
@@ -61,16 +62,12 @@ public class WebServerController : MonoBehaviour {
 		www.SetRequestHeader ("Access-Token", localPlayer.user.token);
 		yield return www.Send ();
 
-		if (www.isError)
-		{
+		if (www.isError) {
 			Debug.LogError (www.error);
-		}
-		else
-		{
-			JsonUtility.FromJsonOverwrite(www.downloadHandler.text, response);
+		} else {
+			JsonUtility.FromJsonOverwrite (www.downloadHandler.text, response);
 			localPlayer.user.characters = response.characters;
-			if (GetCharacterSuccessEvent != null)
-			{
+			if (GetCharacterSuccessEvent != null) {
 				GetCharacterSuccessEvent ();	
 			}
 		}
@@ -98,18 +95,31 @@ public class WebServerController : MonoBehaviour {
 		}
 		else
 		{
-			StartCoroutine(GetCharactersCall ());
+			GetCharacters ();
 		}
 	}
 
 	public void AddCharacter (Character character)
 	{
-		StartCoroutine (CreateCharacter(character));
+		if (localPlayer.canSave)
+		{
+			StartCoroutine (CreateCharacter (character));
+		}
+		else
+		{
+			localPlayer.user.characters.Add(character);
+			if (GetCharacterSuccessEvent != null) {
+				GetCharacterSuccessEvent ();	
+			}
+		}
 	}
 
 	public void GetCharacters ()
 	{
-		StartCoroutine (GetCharactersCall());
+		if (localPlayer.canSave)
+		{
+			StartCoroutine (GetCharactersCall ());
+		}
 	}
 
 	void SetInitialReferences ()

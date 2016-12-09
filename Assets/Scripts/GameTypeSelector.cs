@@ -8,7 +8,6 @@ public class GameTypeSelector : MonoBehaviour
 	private SelectableObjectHighlighter script;
 	private string doorSelected;
 	private bool isGameTypeSelected = false;
-	public bool isNewGame = true;
 	private MyLocalPlayer localPlayer;
 
 	void OnEnable () 
@@ -38,7 +37,12 @@ public class GameTypeSelector : MonoBehaviour
 			if (doorSelected == "Door1") 
 			{
 				localPlayer.newCharacter = true;
-			} 
+			}
+			else if (!localPlayer.canContinue)
+			{
+				Debug.Log ("cannot get to door 2");
+				return;
+			}
 			else if (doorSelected == "Door2") 
 			{
 				localPlayer.newCharacter = false;
@@ -70,7 +74,7 @@ public class GameTypeSelector : MonoBehaviour
 	{
 		if (newScene.name == "CharacterSelector") 
 		{
-			Debug.Log ("This is a new game: " + localPlayer.newCharacter.ToString());
+			
 		}
 	}
 }
